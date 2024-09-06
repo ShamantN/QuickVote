@@ -1,12 +1,10 @@
 // ignore_for_file: unused_local_variable
 
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:firstfiremusic/database/checker.dart';
 import 'package:firstfiremusic/login/new_register.dart';
 import 'package:firstfiremusic/selection_page.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:hive/hive.dart';
 import 'package:loading_animation_widget/loading_animation_widget.dart';
 
 class SignInPage extends StatefulWidget {
@@ -24,18 +22,6 @@ class _SignInPageState extends State<SignInPage> {
   final FirebaseAuth authenticator = FirebaseAuth.instance;
   bool loader = false;
   bool showPwd = true;
-  Check checker = Check();
-  var _myBox = Hive.box('checkLogin');
-
-  @override
-  void initState() {
-    if (_myBox.get('checkLogin') == null) {
-      checker.createData();
-    } else {
-      checker.readLog();
-    }
-    super.initState();
-  }
 
   Future<void> signIn() async {
     String email = emailController.text.trim();
@@ -45,8 +31,6 @@ class _SignInPageState extends State<SignInPage> {
       setState(() {
         loader = true;
       });
-      checker.store = 1;
-      checker.writeLog();
       UserCredential userCredential = await authenticator
           .signInWithEmailAndPassword(email: email, password: password);
       setState(() {
