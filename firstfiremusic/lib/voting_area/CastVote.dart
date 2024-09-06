@@ -194,9 +194,13 @@ class _CastvoteState extends State<Castvote> {
         appBar: AppBar(
           leading: IconButton(
               onPressed: () {
+                HapticFeedback.lightImpact();
                 Navigator.of(context).pop();
               },
-              icon: Icon(Icons.arrow_back_ios_new)),
+              icon: Icon(
+                Icons.keyboard_arrow_up,
+                size: 40,
+              )),
           centerTitle: true,
           excludeHeaderSemantics: true,
           backgroundColor: const Color.fromARGB(255, 15, 134, 231),

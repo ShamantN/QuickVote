@@ -9,7 +9,7 @@
 
 
     <application
-        android:label="QuickReg"
+        android:label="E-Voter"
         android:name="${applicationName}"
         android:icon="@mipmap/ic_launcher">
         <activity

@@ -18,6 +18,32 @@ class _HomeScreenState extends State<HomeScreen> {
   final storageInstance = FirebaseFirestore.instance;
   final authInstance = FirebaseAuth.instance;
 
+  String? userEmail;
+  String? username;
+
+  @override
+  void initState() {
+    super.initState();
+    getUserDetails();
+  }
+
+  Future<void> getUserDetails() async {
+    User? user = authInstance.currentUser;
+    if (user != null) {
+      setState(() {
+        userEmail = user.email;
+      });
+
+      DocumentSnapshot userData =
+          await storageInstance.collection('users').doc(user.uid).get();
+      if (userData.exists) {
+        setState(() {
+          username = userData['Username'];
+        });
+      }
+    }
+  }
+
   void logout() {
     showDialog(
         barrierDismissible: true,
@@ -101,12 +127,44 @@ class _HomeScreenState extends State<HomeScreen> {
           color: Colors.black,
         ),
         actions: [
-          IconButton(
-              onPressed: () {},
-              icon: Icon(
-                Icons.person,
-                color: Colors.black,
-              ))
+          PopupMenuButton(
+            shape:
+                RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
+            shadowColor: Colors.black,
+            elevation: 20,
+            popUpAnimationStyle: AnimationStyle(curve: Curves.decelerate),
+            color: const Color.fromARGB(255, 15, 134, 231),
+            icon: Icon(Icons.person, color: Colors.black),
+            itemBuilder: (context) => [
+              PopupMenuItem(
+                  onTap: () {
+                    HapticFeedback.lightImpact();
+                  },
+                  child: ListTile(
+                      title: Center(
+                    child: Text(
+                      "User Profile",
+                      style: TextStyle(
+                        fontWeight: FontWeight.bold,
+                        fontFamily: 'Helvetica',
+                        fontSize: 18,
+                      ),
+                    ),
+                  ))),
+              PopupMenuItem(
+                child: ListTile(
+                  leading: Icon(Icons.email),
+                  title: Text(userEmail ?? "Loading..."),
+                ),
+              ),
+              PopupMenuItem(
+                child: ListTile(
+                  leading: Icon(Icons.person),
+                  title: Text(username ?? "Loading..."),
+                ),
+              ),
+            ],
+          )
         ],
         automaticallyImplyLeading: false,
         backgroundColor: const Color.fromARGB(255, 15, 134, 231),
@@ -256,6 +314,3 @@ class _HomeScreenState extends State<HomeScreen> {
     );
   }
 }
-
-// .collections() is used to get the path of the stored data
-// snapShot tells us if connection was successfull
